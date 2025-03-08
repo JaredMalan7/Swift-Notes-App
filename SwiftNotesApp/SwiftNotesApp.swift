@@ -2,7 +2,7 @@
 //  SwiftNotesAppApp.swift
 //  SwiftNotesApp
 //
-//  Created by Jared Malan on 3/6/25.
+//  Created by Jared Malan on 2/26/25.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ import SwiftData
 struct SwiftNotesAppApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Note.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
