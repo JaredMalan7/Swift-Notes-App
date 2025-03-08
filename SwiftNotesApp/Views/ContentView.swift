@@ -34,25 +34,48 @@ struct ContentView: View {
                 }
                 .navigationTitle("Swift Notes")
                 .toolbar {
-                    EditButton() //Adds an "Edit" Button to delete multiple notes
+                    #if os(iOS)
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        EditButton() //Adds an "Edit" Button to delete multiple notes
+                    }
+                    #endif
                 }
 
                 // Add new note UI
-                VStack {
+                VStack (alignment: .leading, spacing: 16){
                     TextField("Title", text: $newNoteTitle)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
+                        .padding(.horizontal)
                     
-                    TextEditor(text: $newNoteContent)
-                        .frame(height: 100)
-                        .border(Color.gray, width: 1)
-                        .padding()
+                    Spacer().frame(height: 10)
+                    
+                    ZStack(alignment: .topLeading) {
+                        if newNoteContent.isEmpty {
+                            Text("Write your note here...")
+                                .foregroundColor(.gray)
+                                .padding(.top, -28)
+                                .padding(.leading, 12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .allowsHitTesting(false)
+                        }
+                        
+                        TextEditor(text: $newNoteContent)
+                            .frame(height: 120)
+                            .padding(.horizontal, 6)
+                            .padding(.top, 6)
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                    }
                     
                     Button(action: addNote) {
-                        Label("Add Note", systemImage: "plus")
+                        Label("Add Note", systemImage: "plus.circle.fill")
+                                    .font(.title3)
+                                    .foregroundColor(.white)
                     }
                     .padding()
                     .buttonStyle(.borderedProminent)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
                 .padding()
             }

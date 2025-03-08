@@ -6,22 +6,52 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NoteDetailView: View {
-    let note: Note
+    @Bindable var note: Note
+    @Environment(\.dismiss) var dismiss  // Allows navigation back
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(note.title)
-                .font(.largeTitle)
-                .bold()
-            Text(note.content)
-                .font(.body)
-                .padding(.top, 10)
+        VStack(alignment: .leading, spacing: 16) {
+            TextField("Title", text: $note.title)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+
+            ZStack(alignment: .topLeading) {
+                if note.content.isEmpty {
+                    Text("Write your note here...")
+                        .foregroundColor(.gray)
+                        .padding(.top, -28)
+                        .padding(.leading, 12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .allowsHitTesting(false)
+                }
+                
+                TextEditor(text: $note.content)
+                    .frame(height: 120)
+                    .padding(.horizontal, 6)
+                    .padding(.top, 6)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+            }
+
+            Button(action: {
+                dismiss()  // Save and go back to the main screen
+            }) {
+                Label("Save Changes", systemImage: "checkmark.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(.white)
+            }
+            .padding()
+            .buttonStyle(.borderedProminent)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+
             Spacer()
         }
         .padding()
-        .navigationTitle("Note Details")
+        .navigationTitle("Edit Note")
     }
 }
 
