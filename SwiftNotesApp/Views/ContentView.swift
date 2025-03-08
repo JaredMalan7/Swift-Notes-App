@@ -10,7 +10,7 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var notes: [Note]  // Changed to Note
+    @Query private var notes: [Note] 
 
     @State private var newNoteTitle: String = ""
     @State private var newNoteContent: String = ""
@@ -30,9 +30,12 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .onDelete(perform: deleteNotes)
+                    .onDelete(perform: deleteNotes) // Enables Swipe-to-Delete
                 }
                 .navigationTitle("Swift Notes")
+                .toolbar {
+                    EditButton() //Adds an "Edit" Button to delete multiple notes
+                }
 
                 // Add new note UI
                 VStack {
