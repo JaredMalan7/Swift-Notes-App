@@ -10,8 +10,7 @@ import SwiftData
 
 struct NoteDetailView: View {
     @Bindable var note: Note
-    @Environment(\.dismiss) var dismiss  // Allows navigation back
-    
+    @State private var isEditing = false //Tracks if we are in edit mode
     @State private var tempTitle: String
     @State private var tempContent: String
     
@@ -24,49 +23,81 @@ struct NoteDetailView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            TextField("Title", text: $tempTitle)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
             
-            ZStack(alignment: .topLeading) {
-                if tempContent.isEmpty {
-                    Text("Write your note here...")
-                        .foregroundColor(.gray)
-                        .padding(.top, -28)
-                        .padding(.leading, 12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .allowsHitTesting(false)
+            if isEditing{
+                // This shows editable fields
+                TextField("Title", text: $tempTitle)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.horizontal)
+                
+                ZStack(alignment: .topLeading) {
+                    if tempContent.isEmpty {
+                        Text("Write your note here...")
+                            .foregroundColor(.gray)
+                            .padding(.top, -28)
+                            .padding(.leading, 12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .allowsHitTesting(false)
+                    }
+                    
+                    TextEditor(text: $tempContent)
+                        .frame(height: 120)
+                        .padding(.horizontal, 6)
+                        .padding(.top, 6)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                 }
                 
-                TextEditor(text: $note.content)
-                    .frame(height: 120)
-                    .padding(.horizontal, 6)
-                    .padding(.top, 6)
-                    .background(Color.white)
-                    .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-            }
-            
-            HStack {
-                Button(action: {
-                    dismiss() // Discard changes and return
-                }) {
-                    Label("Cancel", systemImage: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundColor(.white)
+                //Buttons for Save & Cancel
+                HStack {
+                    Button(action: {
+                        isEditing = false // Cancel edits
+                    }) {
+                        Label("Cancel", systemImage: "xmark.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(Color.red)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        note.title = tempTitle
+                        note.content = tempContent
+                        isEditing = false
+                    }) {
+                        Label("Save Changes", systemImage: "checkmark.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .padding()
-                .background(Color.red)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+            } else {
+                Text(note.title)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.horizontal)
+                
+                Text(note.timestamp, style: .date)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+
+                Text(note.content)
+                    .font(.body)
+                    .padding()
                 
                 Spacer()
                 
                 Button(action: {
-                    note.title = tempTitle
-                    note.content = tempContent
-                    dismiss()  // Save and go back
+                    isEditing = true
                 }) {
-                    Label("Save Changes", systemImage: "checkmark.circle.fill")
+                    Label("Edit Note", systemImage: "pencil.circle.fill")
                         .font(.title3)
                         .foregroundColor(.white)
                 }
@@ -78,7 +109,7 @@ struct NoteDetailView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Edit Note")
+        .navigationTitle(isEditing ? "Edit Note" : "Note Details")
     }
 }
 
