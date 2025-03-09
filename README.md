@@ -1,6 +1,3 @@
-# Swift-Notes-App
-
-
 # 📝 Swift Notes App
 
 ## Overview
