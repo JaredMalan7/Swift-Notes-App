@@ -54,15 +54,14 @@ The app is designed to provide a seamless and user-friendly experience, allowing
 ## 🔧 Code Structure
 
 ```bash
-/space-shooter
-│── assets/               # Game assets (sprites, images, sounds)
-│── player.py             # Player spaceship class
-│── enemy.py              # Enemy AI and behavior
-│── boss.py               # Boss AI and attack patterns
-│── asteroid.py           # Asteroid mechanics
-│── bullet.py             # Player & enemy bullets
-│── main.py               # Main game loop and logic
-│── README.md             # Project documentation
+/SwiftNotesApp
+│── SwiftNotesAppApp.swift    # Main entry point of the app
+│── ContentView.swift         # Main UI screen (list of notes, add notes)
+│── NoteDetailView.swift      # Displays note details and enables editing
+│── Models/
+│   ├── Note.swift            # Data model for storing notes
+│── Assets/                   # Icons and images
+│── README.md                 # Project documentation
 ````
 
 ## 📚 Useful Resources
