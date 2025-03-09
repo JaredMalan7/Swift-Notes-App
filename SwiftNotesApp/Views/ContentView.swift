@@ -14,6 +14,7 @@ struct ContentView: View {
 
     @State private var newNoteTitle: String = ""
     @State private var newNoteContent: String = ""
+    @State private var isAddingNote = false // this tracks if input fields are visible
 
     var body: some View {
         NavigationView {
@@ -40,44 +41,85 @@ struct ContentView: View {
                     }
                     #endif
                 }
-
-                // Add new note UI
-                VStack (alignment: .leading, spacing: 16){
-                    TextField("Title", text: $newNoteTitle)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                    
-                    Spacer().frame(height: 10)
-                    
-                    ZStack(alignment: .topLeading) {
-                        if newNoteContent.isEmpty {
-                            Text("Write your note here...")
-                                .foregroundColor(.gray)
-                                .padding(.top, -28)
-                                .padding(.leading, 12)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .allowsHitTesting(false)
+                
+                Spacer()
+                
+                if isAddingNote{
+                    // Add new note UI
+                    VStack (alignment: .leading, spacing: 16){
+                        TextField("Title", text: $newNoteTitle)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                        
+                        Spacer().frame(height: 10)
+                        
+                        ZStack(alignment: .topLeading) {
+                            if newNoteContent.isEmpty {
+                                Text("Write your note here...")
+                                    .foregroundColor(.gray)
+                                    .padding(.top, -28)
+                                    .padding(.leading, 12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .allowsHitTesting(false)
+                            }
+                            
+                            TextEditor(text: $newNoteContent)
+                                .frame(height: 120)
+                                .padding(.horizontal, 6)
+                                .padding(.top, 6)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         }
                         
-                        TextEditor(text: $newNoteContent)
-                            .frame(height: 120)
-                            .padding(.horizontal, 6)
-                            .padding(.top, 6)
-                            .background(Color.white)
-                            .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                    }
-                    
-                    Button(action: addNote) {
-                        Label("Add Note", systemImage: "plus.circle.fill")
+                        HStack {
+                            Button(action: {
+                                isAddingNote = false // Hides input fields
+                                newNoteTitle = ""
+                                newNoteContent = ""
+                                
+                            }){
+                                Label("Cancel", systemImage: "xmark.circle.fill")
                                     .font(.title3)
                                     .foregroundColor(.white)
+                                
+                            }
+                            .padding()
+                            .background(Color.red)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            
+                            Spacer()
+                            
+                            Button(action: addNote){
+                                Label("Add Note", systemImage: "plus.circle.fill")
+                                            .font(.title3)
+                                            .foregroundColor(.white)
+                            }
+                            .padding()
+                            .buttonStyle(.borderedProminent)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            
+                        }
                     }
                     .padding()
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .transition(.move(edge: .bottom))
+                } else{
+                    //Show only the add button initially
+                    Button(action:{
+                        withAnimation{
+                            isAddingNote = true
+                        }
+                    }){
+                        Label("Add note", systemImage: "plus.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .clipShape(RoundedRectangle(cornerRadius: 50))
+                    }
+                    .padding()
+                    .transition(.opacity)
                 }
-                .padding()
             }
         }
     }
@@ -92,6 +134,7 @@ struct ContentView: View {
             // Clear text fields after adding
             newNoteTitle = ""
             newNoteContent = ""
+            isAddingNote = false
         }
     }
 

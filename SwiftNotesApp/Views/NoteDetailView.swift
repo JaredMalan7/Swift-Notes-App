@@ -11,8 +11,8 @@ import SwiftData
 struct NoteDetailView: View {
     @Bindable var note: Note
     @State private var isEditing = false //Tracks if we are in edit mode
-    @State private var tempTitle: String
-    @State private var tempContent: String
+    @State private var tempTitle: String = ""
+    @State private var tempContent: String = ""
     
     init(note: Note){
         self.note = note
