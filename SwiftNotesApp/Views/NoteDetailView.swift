@@ -11,15 +11,25 @@ import SwiftData
 struct NoteDetailView: View {
     @Bindable var note: Note
     @Environment(\.dismiss) var dismiss  // Allows navigation back
+    
+    @State private var tempTitle: String
+    @State private var tempContent: String
+    
+    init(note: Note){
+        self.note = note
+        _tempTitle = State(initialValue: note.title)
+        _tempContent = State(initialValue: note.content)
+        
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            TextField("Title", text: $note.title)
+            TextField("Title", text: $tempTitle)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
-
+            
             ZStack(alignment: .topLeading) {
-                if note.content.isEmpty {
+                if tempContent.isEmpty {
                     Text("Write your note here...")
                         .foregroundColor(.gray)
                         .padding(.top, -28)
@@ -36,18 +46,35 @@ struct NoteDetailView: View {
                     .cornerRadius(8)
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
             }
-
-            Button(action: {
-                dismiss()  // Save and go back to the main screen
-            }) {
-                Label("Save Changes", systemImage: "checkmark.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.white)
+            
+            HStack {
+                Button(action: {
+                    dismiss() // Discard changes and return
+                }) {
+                    Label("Cancel", systemImage: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .background(Color.red)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                
+                Spacer()
+                
+                Button(action: {
+                    note.title = tempTitle
+                    note.content = tempContent
+                    dismiss()  // Save and go back
+                }) {
+                    Label("Save Changes", systemImage: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                }
+                .padding()
+                .background(Color.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            .padding()
-            .buttonStyle(.borderedProminent)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-
+            
             Spacer()
         }
         .padding()
